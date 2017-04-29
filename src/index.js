@@ -10,10 +10,18 @@ class CleverCloudinaryReact extends React.Component {
         super(props);
         // states
         this.state= {
-          progressive: true
+          progressive: true,
+          width: false,
+          quality: false
         }
         // defaults
         this.progressiveThreshold = 200;
+        this.defaultQuality = 'auto';
+        this.unitConvert = {
+          em: 16,
+          rem: 16,
+          px: 1
+        };
     }
 
     static get defaultProps() {
@@ -29,9 +37,37 @@ class CleverCloudinaryReact extends React.Component {
     }
 
     componentWillMount() {
+      const maxWidth = this.maxWidth();
+
+      // Should the image be progressive
       this.setState({
-        progressive: (this.props.progressive || (this.maxWidth() > this.progressiveThreshold))
+        progressive: (this.props.progressive || (maxWidth > this.progressiveThreshold))
       });
+      // Set width if set as a prop
+      if(this.props.width) {
+        // Check if it has _any_ extra information
+        let widthMeasure = this.props.width.match(/([0-9]+)/g);
+        let widthSuffix = this.props.width.match(/([^0-9]+)/g);
+        if(widthSuffix != '%') {
+          for(let key in this.unitConvert) {
+            if (key == widthSuffix) {
+              widthMeasure = parseInt(widthMeasure) * parseInt(this.unitConvert[key]);
+            }
+          }
+          if ((widthMeasure < maxWidth) || maxWidth == 0) {
+            this.setState({
+              width: widthMeasure
+            });
+          }
+        }
+      }
+      // Set default quality
+      const quality = this.qualityAssigned();
+      if (quality) {
+        this.setState({
+          quality: this.defaultQuality
+        })
+      }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -44,12 +80,25 @@ class CleverCloudinaryReact extends React.Component {
           return (parseInt(child.props.width)) ? parseInt(child.props.width) : 0;
         }
       );
-      return widths[widths.length-1];
+      return (widths) ? widths[widths.length-1] : 0;
+    }
+
+    qualityAssigned() {
+      var quality = React.Children.map(
+        this.props.children,
+        function(child) {
+          return (child.props.quality) ? 1 : 0;
+        }
+      );
+      return (quality) ? (quality.indexOf(1)>=0) : false;
     }
 
     render() {
 
-        let progressiveTag = (this.state.progressive) ? <Transformation flags="progressive" /> : <Transformation flags="any_format" />;
+        let progressiveTag = (this.state.progressive) ? <Transformation flags="progressive" /> : <Transformation/>;
+        let children = (this.props.children) ? this.props.children : <Transformation/>
+        let width = (this.state.width) ? <Transformation width={ this.state.width } crop="scale"/> : <Transformation/>
+        let quality = (this.state.quality) ? <Transformation quality={ this.state.quality }/> : <Transformation/>
 
         return(
             <CloudinaryContext
@@ -59,8 +108,11 @@ class CleverCloudinaryReact extends React.Component {
               cname={ this.props.cname }
               cdnSubdomain={ this.props.cdnSubdomain } >
               <Image publicId={ this.props.publicId }>
+                <Transformation dpr="auto" />
+                { children }
                 { progressiveTag }
-                { this.props.children }
+                { width }
+                { quality }
               </Image>
             </CloudinaryContext>
         )
