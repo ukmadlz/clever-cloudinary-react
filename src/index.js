@@ -107,7 +107,7 @@ class CleverCloudinaryReact extends React.Component {
               secureDistribution={ this.props.secureDistribution }
               cname={ this.props.cname }
               cdnSubdomain={ this.props.cdnSubdomain } >
-              <Image publicId={ this.props.publicId }>
+              <Image publicId={ this.props.publicId } width={ this.props.width }>
                 <Transformation dpr="auto" />
                 { children }
                 { progressiveTag }
