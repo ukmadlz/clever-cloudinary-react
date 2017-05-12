@@ -1,6 +1,6 @@
 {
   "name": "clever-cloudinary-react",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "lib/index.js",
   "scripts": {
     "prebulish": "npm run build:production",
@@ -17,7 +17,6 @@
   "license": "MIT",
   "peerDependency": {
     "react": "^15.5.4",
-    "react-dom": "^15.5.4",
     "cloudinary-core": "^2.3.0",
     "cloudinary-react": "^1.0.3"
   },

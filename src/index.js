@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { CloudinaryContext, Image, Transformation } from 'cloudinary-react';
 
 class CleverCloudinaryReact extends React.Component {
@@ -99,8 +98,9 @@ class CleverCloudinaryReact extends React.Component {
         let children = (this.props.children) ? this.props.children : <Transformation/>
         let width = (this.state.width) ? <Transformation width={ this.state.width } crop="scale"/> : <Transformation/>
         let quality = (this.state.quality) ? <Transformation quality={ this.state.quality }/> : <Transformation/>
-
         return(
+          <div>
+            <p>{this.props.width}</p>
             <CloudinaryContext
               cloudName={ this.props.cloudName }
               privateCdn={ this.props.privateCdn }
@@ -115,6 +115,7 @@ class CleverCloudinaryReact extends React.Component {
                 { quality }
               </Image>
             </CloudinaryContext>
+          </div>
         )
     }
 
