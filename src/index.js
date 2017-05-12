@@ -31,7 +31,8 @@ class CleverCloudinaryReact extends React.Component {
           privateCdn: '',
           secureDistribution: '',
           cname: '',
-          cdnSubdomain: ''
+          cdnSubdomain: '',
+          width: '',
         }
     }
 
@@ -96,11 +97,9 @@ class CleverCloudinaryReact extends React.Component {
 
         let progressiveTag = (this.state.progressive) ? <Transformation flags="progressive" /> : <Transformation/>;
         let children = (this.props.children) ? this.props.children : <Transformation/>
-        let width = (this.state.width) ? <Transformation width={ this.state.width } crop="scale"/> : <Transformation/>
-        let quality = (this.state.quality) ? <Transformation quality={ this.state.quality }/> : <Transformation/>
+        let widthTag = (this.state.width) ? <Transformation width={ this.state.width } crop="scale"/> : <Transformation/>
+        let qualityTag = (this.state.quality) ? <Transformation quality={ this.state.quality }/> : <Transformation/>
         return(
-          <div>
-            <p>{this.props.width}</p>
             <CloudinaryContext
               cloudName={ this.props.cloudName }
               privateCdn={ this.props.privateCdn }
@@ -111,11 +110,10 @@ class CleverCloudinaryReact extends React.Component {
                 <Transformation dpr="auto" />
                 { children }
                 { progressiveTag }
-                { width }
-                { quality }
+                { widthTag }
+                { qualityTag }
               </Image>
             </CloudinaryContext>
-          </div>
         )
     }
 
